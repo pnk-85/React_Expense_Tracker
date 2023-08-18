@@ -1,6 +1,8 @@
 import { Route } from "react-router-dom/cjs/react-router-dom.min";
-import SignUp from "./Component/SignUp";
-import DummyScreen from "./Component/DummyScreen";
+import SignUp from "./Pages/SignUp";
+
+import Profile from "./Pages/Profile";
+import ProfilePage from "./Pages/ProfilePage";
 function App() {
   return (
     <>
@@ -8,7 +10,10 @@ function App() {
           <SignUp />
       </Route>
       <Route exact path={'/dummy'}>
-        <DummyScreen />
+        <Profile />
+      </Route>
+      <Route exact path={'/profilepage'}>
+        <ProfilePage />
       </Route>
     </>
   );
