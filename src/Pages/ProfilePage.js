@@ -1,4 +1,4 @@
-import React,{useRef} from "react";
+import React,{useRef, useEffect} from "react";
 import axios from "axios";
 
 
@@ -6,6 +6,25 @@ const ProfilePage = () => {
 
     const nameRef = useRef();
     const photoRef = useRef();
+
+
+    const getData = () => {
+        const token = localStorage.getItem('token');
+
+        axios.post('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyB_KrVsqVyvnfxCyCt-K0OsCwLiMnhrEVU',
+        {
+            idToken : token
+        })
+        .then((res) => {
+            console.log("res.data profile data", res.data.users[0]);
+            nameRef.current.value = res.data.users[0].displayName;
+            photoRef.current.value = res.data.users[0].photoUrl;
+        })
+        .catch((error) => console.log(error.response.data.error.message));
+    };
+    useEffect(() => {
+        getData();
+    },[]);
 
     const updateHandler = () => {
         
@@ -24,6 +43,7 @@ const ProfilePage = () => {
 
 
     return (
+        <>
         <div className="container mt-5">
       <div className="row">
         <div className="col-md-6 text-center mx-auto border bg-info text-white p-3">
@@ -66,6 +86,8 @@ const ProfilePage = () => {
         </div>
       </div>
     </div>
+    </>
+        
     );
 };
 
