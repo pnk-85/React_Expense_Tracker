@@ -1,11 +1,11 @@
 import axios from "axios";
-import React,{useContext, useRef,useState} from "react";
+import React, { useContext, useRef, useState } from "react";
 import { useHistory } from 'react-router-dom';
 import AuthContext from "../Store/AuthContext";
 
 const SignUp = () => {
 
-    const [errorShow,setErrorShow] = useState(false);
+    const [errorShow, setErrorShow] = useState(false);
     const [isLogIn, setIsLogIn] = useState(false);
     const history = useHistory();
     const authCtx = useContext(AuthContext);
@@ -21,29 +21,34 @@ const SignUp = () => {
         setErrorShow(false);
     };
 
+    const goToforgetpassword = (e) => {
+        e.preventDefault();
+        history.push("/forgetpassword");
+    };
+
     const loginHandler = (e) => {
         e.preventDefault();
 
         setErrorShow(false);
-        if(emailRef.current.value && passwordref.current.value){
+        if (emailRef.current.value && passwordref.current.value) {
             axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyB_KrVsqVyvnfxCyCt-K0OsCwLiMnhrEVU`,
-            {
-                email : emailRef.current.value,
-                password : passwordref.current.value,
-                returnSecureToken : true,
-            })
-            .then((res) => {
-                console.log('use logged succes');
-                authCtx.login(res.data.idToken);
-                history.push('/dummy');
-            })
-            .catch((error) => {
-                alert(error.response.data.error.message);
-            })
-        }else{
+                {
+                    email: emailRef.current.value,
+                    password: passwordref.current.value,
+                    returnSecureToken: true,
+                })
+                .then((res) => {
+                    console.log('use logged succes');
+                    authCtx.login(res.data.idToken);
+                    history.push('/dummy');
+                })
+                .catch((error) => {
+                    alert(error.response.data.error.message);
+                })
+        } else {
             setErrorShow(true);
         }
-        
+
     }
 
 
@@ -51,27 +56,27 @@ const SignUp = () => {
         e.preventDefault();
 
         setErrorShow(false);
-        if(
+        if (
             emailRef.current.value &&
             passwordref.current.value &&
             confirmPasswordRef.current.value
-        ){
+        ) {
             axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyB_KrVsqVyvnfxCyCt-K0OsCwLiMnhrEVU`,
-            {
-                email : emailRef.current.value,
-                password : passwordref.current.value,
-                returnSecureToken : true,
-            })
-            .then((res) => {
-                console.log("user sucess");
-                const token = res.data.idToken;
-                console.log('res.data', token);
-                setIsLogIn(!isLogIn);
-            })
-            .catch((error) => {
-                alert(error.response.data.error.message);
-            });
-        }else{
+                {
+                    email: emailRef.current.value,
+                    password: passwordref.current.value,
+                    returnSecureToken: true,
+                })
+                .then((res) => {
+                    console.log("user sucess");
+                    const token = res.data.idToken;
+                    console.log('res.data', token);
+                    setIsLogIn(!isLogIn);
+                })
+                .catch((error) => {
+                    alert(error.response.data.error.message);
+                });
+        } else {
             setErrorShow(true);
         }
     };
@@ -82,10 +87,9 @@ const SignUp = () => {
         <div className="container">
             <div className="row">
                 <div className="col-md-6 mx-auto mt-5 p-3 text-white text-center">
-                    <div className={`${
-                        isLogIn ? "bg-info p-3 rounded-2" : "bg-warning p-3 rounded-2"
-                    }`}>
-                        <h3>{isLogIn ? "Sign Up" : "Login" }</h3>
+                    <div className={`${isLogIn ? "bg-info p-3 rounded-2" : "bg-warning p-3 rounded-2"
+                        }`}>
+                        <h3>{isLogIn ? "Sign Up" : "Login"}</h3>
                     </div>
                 </div>
             </div>
@@ -103,9 +107,9 @@ const SignUp = () => {
 
                         {isLogIn && (
                             <div className="form-group mt-3">
-                            <label className="form-label fw-bolder">Confirm Password</label>
-                            <input type="password" placeholder="Confirm Password" className="form-control" ref={confirmPasswordRef} />
-                        </div>
+                                <label className="form-label fw-bolder">Confirm Password</label>
+                                <input type="password" placeholder="Confirm Password" className="form-control" ref={confirmPasswordRef} />
+                            </div>
                         )}
 
                         <div className="d-grid">
@@ -114,17 +118,25 @@ const SignUp = () => {
                                     All Field Are Mandatory !!!!
                                 </h4>
                             )}
-                            
+
                             {isLogIn && (
                                 <button className="btn btn-primary mt-3 p-2 rounded-pill" onClick={signUpHandler}>
-                                Sign Up
-                            </button>
+                                    Sign Up
+                                </button>
                             )}
 
                             {!isLogIn && (
                                 <button className="btn btn-primary mt-3 p-2 rounded-pill" onClick={loginHandler}>
-                                Login
-                            </button>
+                                    Login
+                                </button>
+                            )}
+                            {!isLogIn && (
+                                <button
+                                    className="btn btn-link fw-bold"
+                                    onClick={goToforgetpassword}
+                                >
+                                    Forget Password
+                                </button>
                             )}
                         </div>
                     </form>
