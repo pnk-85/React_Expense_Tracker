@@ -3,9 +3,13 @@ import SignUp from "./Pages/SignUp";
 
 import Profile from "./Pages/Profile";
 import ProfilePage from "./Pages/ProfilePage";
+import Navbar from "./Component/Navbar";
+
+
 function App() {
   return (
     <>
+    <Navbar />
     <Switch>
     <Route exact path={'/'}>
           <SignUp />

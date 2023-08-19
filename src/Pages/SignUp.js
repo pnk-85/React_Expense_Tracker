@@ -1,13 +1,14 @@
 import axios from "axios";
-import React,{useRef,useState} from "react";
+import React,{useContext, useRef,useState} from "react";
 import { useHistory } from 'react-router-dom';
-
+import AuthContext from "../Store/AuthContext";
 
 const SignUp = () => {
 
     const [errorShow,setErrorShow] = useState(false);
     const [isLogIn, setIsLogIn] = useState(false);
     const history = useHistory();
+    const authCtx = useContext(AuthContext);
 
 
     const emailRef = useRef();
@@ -33,8 +34,7 @@ const SignUp = () => {
             })
             .then((res) => {
                 console.log('use logged succes');
-                console.log(res.data.idToken);
-                localStorage.setItem('token', res.data.idToken);
+                authCtx.login(res.data.idToken);
                 history.push('/dummy');
             })
             .catch((error) => {
@@ -64,6 +64,8 @@ const SignUp = () => {
             })
             .then((res) => {
                 console.log("user sucess");
+                const token = res.data.idToken;
+                console.log('res.data', token);
                 setIsLogIn(!isLogIn);
             })
             .catch((error) => {
