@@ -39,8 +39,17 @@ const SignUp = () => {
                 })
                 .then((res) => {
                     console.log('use logged succes');
+                    console.log(res.data);
+
+                    if(res.data.displayNmae && res.data.profilePicture){
+                        authCtx.setProfile(true);
+                        console.log('authCtx', authCtx);
+                    }else {
+                        authCtx.isProfileCompleted = false;
+                    }
+
                     authCtx.login(res.data.idToken);
-                    history.push('/dummy');
+                    history.push('/profile');
                 })
                 .catch((error) => {
                     alert(error.response.data.error.message);
@@ -102,7 +111,7 @@ const SignUp = () => {
                         </div>
                         <div className="form-group mt-3">
                             <label className="form-label fw-bolder">Password</label>
-                            <input type="password" placeholder="Password" className="form-control" ref={passwordref} />
+                            <input type="password" placeholder="Password" className="form-control" autoComplete="on" ref={passwordref} />
                         </div>
 
                         {isLogIn && (
