@@ -24,16 +24,16 @@ const Profile = () => {
               .get(`${url}/expenses/${emailEx}.json`)
               .then((res) => {
                 console.log(res.data);
-                console.log(Object.keys(res.data));
+                const firebaseIDs = Object.keys(res.data);
                 const newItems = [];
                 Object.values(res.data).forEach((el) => {
                   newItems.push({
                     ...JSON.parse(el.body),
-                    key: newItems.length + 1,
-                    id: newItems.length + 1,
+                    key: firebaseIDs[newItems.length],
+                    firebaseID: firebaseIDs[newItems.length],
                   });
                 });
-                console.log("newItems", newItems);
+                // console.log("newItems", newItems);
                 authCtx.setItems(newItems);
               })
               .catch((error) => console.log(error.message));
@@ -54,10 +54,34 @@ const Profile = () => {
           axios.post(`${url}/expenses/${emailEx}.json`, {
             body : JSON.stringify(item)
           })
-          .then((res) => console.log("res data from axios", res.data))
+          .then((res) => {
+    
+            authCtx.addExpense({
+              ...item,
+              firebaseID: res.data.name,
+              key: res.data.name,
+            });
+            categoryRef.current.value = "Category";
+            descriptionRef.current.value = "";
+            moneyRef.current.value = "";
+          })
           .catch((error) => console.log(error.message));
-      
-          authCtx.addExpense(item);
+      };
+    
+      const editItem = (item) => {
+        getData();
+        categoryRef.current.value = item.category;
+        descriptionRef.current.value = item.description;
+        moneyRef.current.value = item.money;
+    
+        axios
+          .delete(`${url}/expenses/${emailEx}/${item.firebaseID}.json`)
+          .then((res) => {
+            console.log(res);
+    
+            authCtx.removeExpense(item.firebaseID);
+          })
+          .catch((error) => console.log(error.message));
         };
         return (
           <>
@@ -142,7 +166,7 @@ const Profile = () => {
                 </Col>
               </Row>
             </Container>
-            {authCtx.items.length && <ShowExpenseOnScreen />}
+            {authCtx.items.length && <ShowExpenseOnScreen editItem={editItem} />}
           </>
     )
 };

@@ -13,7 +13,8 @@ const AuthContext = React.createContext({
     logout : () => {},
     addExpense : (item) => {},
     removeExpense : () => {},
-    setItems : () => {}
+    setItems : () => {},
+    setFisebaseID : () => {}
 });
 
 export const AuthContextProvider = (props) => {
@@ -23,6 +24,7 @@ export const AuthContextProvider = (props) => {
     const [profile, setProfile] = useState(false);
     const [uname, setUname] = useState('');
     const [items, setItems] = useState([]);
+    const [firebaseID, setFisebaseID] = useState([]);
 
     if(localStorage.getItem('token')) {
         firstToken = localStorage.getItem('token');
@@ -37,11 +39,10 @@ const addExpenseHandler = (item) => {
         ...items,
         {...item, key: items.length + 1, id : items.length + 1}
     ]);
-    console.log('items in AuthContext', items);
 };
 
 const removeExpenseHandler = (id) => {
-    setItems(items.filter((item) => id !== item.id));
+    setItems(items.filter((item) => id !== item.firebaseID));
 };
 
 useEffect(() => {
@@ -64,6 +65,7 @@ const authContextValue = {
     token: token,
     uname : uname,
     items : items,
+    firebaseID : firebaseID,
     isLoggedIn: userLoggedIn,
     isProfileCompleted : profile,
     setItems : setItems,
@@ -73,6 +75,7 @@ const authContextValue = {
     logout: logOutHandler,
     addExpense : addExpenseHandler,
     removeExpense : removeExpenseHandler,
+    setFisebaseID : setFisebaseID,
 };
 
 

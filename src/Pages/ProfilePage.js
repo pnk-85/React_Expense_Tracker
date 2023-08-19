@@ -18,7 +18,7 @@ const ProfilePage = () => {
             idToken : token
         })
         .then((res) => {
-          console.log("res.data imported profile data", res.data.users[0]);
+          // console.log("res.data imported profile data", res.data.users[0]);
           if (!res.data.users[0].displayName && !res.data.users[0].photoUrl) {
             nameRef.current.value = "";
             photoRef.current.value = "";
