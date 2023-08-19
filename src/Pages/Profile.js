@@ -1,8 +1,9 @@
-import React,{useContext, useRef} from "react";
+import React,{useContext, useRef, useEffect} from "react";
 import { useHistory} from 'react-router-dom'
 import AuthContext from "../Store/AuthContext";
 import { Container,Row,Col } from "react-bootstrap";
 import ShowExpenseOnScreen from "../Component/ShowExpenseOnScreen";
+import axios from "axios";
 
 const Profile = () => {
 
@@ -11,10 +12,36 @@ const Profile = () => {
         const categoryRef = useRef();
         const descriptionRef = useRef();
         const moneyRef = useRef();
+        const url = 'https://expense-tracker-d844b-default-rtdb.firebaseio.com/';
+        const emailEx =localStorage.getItem("email").replace(/[^a-zA-Z0-9 ]/g, "");
       
         const goToPrifile = () => {
           history.push("/profilepage");
         };
+
+        function getData() {
+            axios
+              .get(`${url}/expenses/${emailEx}.json`)
+              .then((res) => {
+                console.log(res.data);
+                console.log(Object.keys(res.data));
+                const newItems = [];
+                Object.values(res.data).forEach((el) => {
+                  newItems.push({
+                    ...JSON.parse(el.body),
+                    key: newItems.length + 1,
+                    id: newItems.length + 1,
+                  });
+                });
+                console.log("newItems", newItems);
+                authCtx.setItems(newItems);
+              })
+              .catch((error) => console.log(error.message));
+          }
+        
+          useEffect(() => {
+            getData();
+          }, []);
       
         const addExpenseHandler = () => {
           const item = {
@@ -23,6 +50,12 @@ const Profile = () => {
             money: moneyRef.current.value,
           };
           console.log("item in profile", item);
+
+          axios.post(`${url}/expenses/${emailEx}.json`, {
+            body : JSON.stringify(item)
+          })
+          .then((res) => console.log("res data from axios", res.data))
+          .catch((error) => console.log(error.message));
       
           authCtx.addExpense(item);
         };
@@ -59,8 +92,8 @@ const Profile = () => {
                   >
                     <option>Category</option>
                     <option value="Food">Food</option>
-                    <option value="Fees">Fees</option>
-                    <option value="Rent">Rent</option>
+                    <option value="Petrol">Petrol</option>
+                    <option value="Medicine">Medicine</option>
                     <option value="Entertainment">Entertainment</option>
                   </select>
                 </Col>

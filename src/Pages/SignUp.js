@@ -31,6 +31,7 @@ const SignUp = () => {
 
         setErrorShow(false);
         if (emailRef.current.value && passwordref.current.value) {
+            localStorage.setItem("email", emailRef.current.value);
             axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyB_KrVsqVyvnfxCyCt-K0OsCwLiMnhrEVU`,
                 {
                     email: emailRef.current.value,

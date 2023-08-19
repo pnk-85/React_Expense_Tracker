@@ -13,7 +13,7 @@ const ShowExpenseOnScreen = () => {
 
   const Items = authCtx.items.map((item) => {
     return (
-      <tr className="text-dark fw-bold">
+      <tr className="text-dark fw-bold" key={item.id}>
         <td>{item.id}</td>
         <td className="text-dark fw-bold">{item.category}</td>
         <td>{item.description}</td>
