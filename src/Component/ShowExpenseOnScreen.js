@@ -3,11 +3,20 @@ import { Container, Row,Table } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { expenseActions } from "../Store/expenses";
+import { CSVLink } from "react-csv";
+
+
+const headers = [
+  { label: "Category", key: "category" },
+  { label: "Description", key: "description" },
+  { label: "Money", key: "money" },
+];
 
 
 const ShowExpenseOnScreen = (props) => {
 
   const items = useSelector(state => state.expenses.items);
+  const total = useSelector(state => state.expenses.total)
   const dispatch = useDispatch();
 
     const emailEx = localStorage.getItem("email").replace(/[^a-zA-Z0-9 ]/g, "");
@@ -21,7 +30,7 @@ const ShowExpenseOnScreen = (props) => {
     axios.delete(urlRemoveItem)
     .then((res) => {
         console.log('expense deleted');
-        dispatch(expenseActions.removeExpense(item.firebaseID))
+        dispatch(expenseActions.removeExpense(item))
     })
     .catch((error) => console.log(error.message));
   };
@@ -59,12 +68,27 @@ const ShowExpenseOnScreen = (props) => {
   });
 
   return (
-    <Container className="mt-2 " style={{ backgroundColor: "#2FC3BA" }}>
+    <Container className="mt-2 pankaj" style={{ backgroundColor: "#2FC3BA" }}>
       <Row>
         <Table striped="columns">
           <thead>
+          {total > 10000 && (
+              <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>
+                  <div className="d-grid ">
+                    <CSVLink data={items} headers={headers}>
+                      <button className="btn btn-warning">Download</button>
+                    </CSVLink>
+                  </div>
+                </th>
+                <th></th>
+              </tr>
+            )}
             <tr className="fs-5 text-danger">
-              {/* <th>Sr. No.</th> */}
+              
               <th className="fs-5 text-danger">Category</th>
               <th>Description</th>
               <th className="fs-5 text-danger">Money Spend</th>

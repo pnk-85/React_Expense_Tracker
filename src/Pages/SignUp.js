@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from 'react-router-dom';
 import { authActions } from "../Store/auth";
+import { expenseActions } from "../Store/expenses";
 
 
 const SignUp = () => {
@@ -32,7 +33,7 @@ const SignUp = () => {
 
     const loginHandler = (e) => {
         e.preventDefault();
-
+        dispatch(expenseActions.removeall());
         setErrorShow(false);
         if (emailRef.current.value && passwordref.current.value) {
             localStorage.setItem("email", emailRef.current.value);
@@ -88,9 +89,12 @@ const SignUp = () => {
 
 
     return (
-        <div className="container">
+        <div
+            className="container-fluid"
+            style={{ height: "100vh", paddingTop: "100px" }}
+        >
             <div className="row">
-                <div className="col-md-6 mx-auto mt-5 p-3 text-white text-center">
+                <div className="col-md-6 mx-auto mt-5 p-3  text-white text-center">
                     <div className={`${isLogIn ? "bg-info p-3 rounded-2" : "bg-warning p-3 rounded-2"
                         }`}>
                         <h3>{isLogIn ? "Sign Up" : "Login"}</h3>

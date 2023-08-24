@@ -4,15 +4,19 @@ import { useSelector, useDispatch } from "react-redux";
 import {useHistory} from 'react-router-dom'
 import {authActions} from '../Store/auth';
 import { NavLink } from "react-router-dom/cjs/react-router-dom";
+import {themeActions} from '../Store/theme';
+import './Navbar.css'
 
 const Navbar = () => {
 
     const [showTotal, setShowTotal] = useState(false);
+    const [premiumActivate, setPremiumActivate] = useState(false);
     const history = useHistory();
 
     const auth = useSelector(state => state.auth.isAuthenticated);
     const token = useSelector(state => state.auth.token);
     const total = useSelector(state => state.expenses.total);
+    const theme = useSelector(state => state.theme.darkTheme);
 
     useEffect(() => {
       if(total > 10000){
@@ -43,17 +47,33 @@ const Navbar = () => {
         history.push('./');
     };
 
-
-
+    const changeTheme = () => {
+      dispatch(themeActions.changeTheme());
+    }
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark p-3">
-        <div className="container-fluid">
-          <h4 className="navbar-brand">Navbar</h4>
+      <nav
+      style={{
+        position: "fixed",
+        width: "100%",
+      }}
+      className={`${
+        theme
+          ? "navbar navbar-expand-lg bg-warning p-3"
+          : "navbar navbar-expand-lg bg-dark p-3"
+      }`}
+    >
+      <div className="container-fluid ">
+        {/* <h4 className="navbar-brand">Navbar</h4> */}
+        <div className="heading waviy rounded-3 ps-3 pe-3 ">
+          <span >ExpenseTracker</span>
+          
+
+        </div>
   
-          <div className="collapse navbar-collapse" id="navbarNav">
+          <div className="collapse navbar-collapse ps-5" id="navbarNav">
             <ul className="navbar-nav">
-              <li className="nav-item">
+              <li className="nav-item fw-folder">
                 {auth && <NavLink to='/profile'> Home </NavLink>}
                 {!auth && <NavLink to='/'> Home </NavLink>}
               </li>
@@ -74,11 +94,29 @@ const Navbar = () => {
               
 
               {showTotal && (
-                <botton
-                className='btn btn-success ms-4'
-                onClick={logOutHandler}>
-                  Active Premium
-                </botton>
+                 <>
+                 {!premiumActivate && (
+                   <button
+                     className="btn btn-success ms-4 "
+                     onClick={() => setPremiumActivate(true)}
+                   >
+                     Activate Premium
+                   </button>
+                 )}
+                 {premiumActivate && (
+                   <button className="btn btn-success ms-4 ">
+                     <div className="form-check form-switch">
+                       <label className="form-check-label">Change Theme</label>
+                       <input
+                         className="form-check-input"
+                         type="checkbox"
+                         id="flexSwitchCheckDefault"
+                         onClick={() => changeTheme()}
+                       />
+                     </div>
+                   </button>
+                 )}
+               </>
               )}
           </div>
             )}
