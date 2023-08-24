@@ -1,13 +1,14 @@
-import React,{useRef, useEffect, useContext} from "react";
+import React,{useRef, useEffect} from "react";
 import axios from "axios";
-import AuthContext from "../Store/AuthContext";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 
 const ProfilePage = () => {
 
+    const history = useHistory();
     const nameRef = useRef();
     const photoRef = useRef();
-    const authCtx = useContext(AuthContext);
+    
 
 
     function getData () {
@@ -18,15 +19,14 @@ const ProfilePage = () => {
             idToken : token
         })
         .then((res) => {
-          // console.log("res.data imported profile data", res.data.users[0]);
+          
           if (!res.data.users[0].displayName && !res.data.users[0].photoUrl) {
             nameRef.current.value = "";
             photoRef.current.value = "";
           } else {
             nameRef.current.value = res.data.users[0].displayName;
             photoRef.current.value = res.data.users[0].photoUrl;
-            authCtx.isProfileCompleted = true;
-            authCtx.setUname(res.data.users[0].displayName);
+            
           }
         })
         .catch((error) => console.log(error.response.data.error.message));
@@ -34,6 +34,10 @@ const ProfilePage = () => {
     useEffect(() => {
         getData();
     },[]);
+
+    const cancelHandler = () =>{
+      history.push('./profile')
+    };
 
     const updateHandler = () => {
         
@@ -89,7 +93,10 @@ const ProfilePage = () => {
           >
             Update
           </button>
-          <button className="ms-5 me-5 p-3 btn btn-danger fw-bold">
+          <button 
+          className="ms-5 me-5 p-3 btn btn-danger fw-bold"
+          onClick={cancelHandler}
+          >
             Cancel
           </button>
         </div>

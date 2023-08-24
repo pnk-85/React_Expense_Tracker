@@ -1,14 +1,18 @@
 import axios from "axios";
-import React, { useContext, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useHistory } from 'react-router-dom';
-import AuthContext from "../Store/AuthContext";
+import { authActions } from "../Store/auth";
+
 
 const SignUp = () => {
 
     const [errorShow, setErrorShow] = useState(false);
     const [isLogIn, setIsLogIn] = useState(false);
     const history = useHistory();
-    const authCtx = useContext(AuthContext);
+
+    const dispatch = useDispatch();
+
 
 
     const emailRef = useRef();
@@ -39,18 +43,10 @@ const SignUp = () => {
                     returnSecureToken: true,
                 })
                 .then((res) => {
-                    console.log('use logged succes');
-                    console.log(res.data);
-
-                    if(res.data.displayNmae && res.data.profilePicture){
-                        authCtx.setProfile(true);
-                        console.log('authCtx', authCtx);
-                    }else {
-                        authCtx.isProfileCompleted = false;
-                    }
-
-                    authCtx.login(res.data.idToken);
+                    localStorage.setItem('token', res.data.idToken);
                     history.push('/profile');
+
+                    dispatch(authActions.login());
                 })
                 .catch((error) => {
                     alert(error.response.data.error.message);
@@ -78,9 +74,7 @@ const SignUp = () => {
                     returnSecureToken: true,
                 })
                 .then((res) => {
-                    console.log("user sucess");
-                    const token = res.data.idToken;
-                    console.log('res.data', token);
+
                     setIsLogIn(!isLogIn);
                 })
                 .catch((error) => {

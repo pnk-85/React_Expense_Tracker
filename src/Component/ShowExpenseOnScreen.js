@@ -1,15 +1,19 @@
-import React,{useContext} from "react";
+import React from "react";
 import { Container, Row,Table } from "react-bootstrap";
-import AuthContext from "../Store/AuthContext";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
+import { expenseActions } from "../Store/expenses";
 
 
 const ShowExpenseOnScreen = (props) => {
 
+  const items = useSelector(state => state.expenses.items);
+  const dispatch = useDispatch();
+
     const emailEx = localStorage.getItem("email").replace(/[^a-zA-Z0-9 ]/g, "");
     const url ='https://expense-tracker-d844b-default-rtdb.firebaseio.com/';
 
-  const authCtx = useContext(AuthContext);
+  
 
   const removeItem = (item) => {
     const urlRemoveItem = `${url}/expenses/${emailEx}/${item.firebaseID}.json`;
@@ -17,7 +21,7 @@ const ShowExpenseOnScreen = (props) => {
     axios.delete(urlRemoveItem)
     .then((res) => {
         console.log('expense deleted');
-        authCtx.removeExpense(item.firebaseID);
+        dispatch(expenseActions.removeExpense(item.firebaseID))
     })
     .catch((error) => console.log(error.message));
   };
@@ -26,10 +30,10 @@ const ShowExpenseOnScreen = (props) => {
     props.editItem(item);
   }
 
-  const Items = authCtx.items.map((item) => {
+  const Items = items.map((item) => {
     return (
       <tr className="text-dark fw-bold" key={item.firebaseID}>
-        {/* <td>{item.id}</td> */}
+        
         <td className="text-dark fw-bold">{item.category}</td>
         <td>{item.description}</td>
         <td className="text-dark fw-bold"> ₹ {item.money}.00</td>
